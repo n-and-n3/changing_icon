@@ -60,8 +60,10 @@ def change_icon():
         files = {'file': (os.path.basename(icon_path), f, 'image/png')}
         cookies = {"r_session": r_session_cookie}
         url = f"{BASE_URL}/users/me/icon"
-        response = httpx.post(url, files=files, cookies=cookies)
-        print(response)
+        response = httpx.put(url, files=files, cookies=cookies)
+
+        print("POST先URL:", url)
+        print("r_session:", cookies.get("r_session"))
 
     if response.status_code == 204:
         print("アイコン変更に成功しました")
