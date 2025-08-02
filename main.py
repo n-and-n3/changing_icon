@@ -13,7 +13,7 @@ SECRET_COOKIE = os.getenv("SECRET_COOKIE")  # traQのr_sessionクッキー
 def get_today_icon_path():
     """今日の日付に対応するアイコン画像のパスを返す。例: icons/01.png"""
     today = datetime.now().day
-    return f"icons/{today:02d}.png"
+    return f"assets/{today:02d}.png"
 
 def change_icon():
     """アイコン画像をtraQ API経由で変更する"""
