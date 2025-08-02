@@ -2,11 +2,15 @@ import os
 from datetime import datetime
 import httpx
 import dotenv
-import random 
+import schedule
 import time
+import random
 
-# .envファイルから環境変数を読み込む
 dotenv.load_dotenv()
+
+BASE_URL = os.getenv("BASE_URL")
+TRAQ_USERNAME = os.getenv("TRAQ_USERNAME")
+TRAQ_PASSWORD = os.getenv("TRAQ_PASSWORD")
 
 # 必要な情報を環境変数から取得
 BASE_URL = os.getenv("BASE_URL")               # 例: https://q.trap.jp/api/v3
@@ -58,7 +62,6 @@ def change_icon():
     if not r_session_cookie:
         print("r_sessionクッキー取得できず、アイコン変更不可")
         return
-    print(r_session_cookie)
 
     with open(icon_path, "rb") as f:
         files = {'file': (os.path.basename(icon_path), f, 'image/png')}
@@ -67,14 +70,18 @@ def change_icon():
         response = httpx.put(url, files=files, cookies=cookies)
 
         print("POST先URL:", url)
-        print("r_session:", cookies.get("r_session"))
 
     if response.status_code == 204:
         print("アイコン変更に成功しました")
     else:
         print(f"失敗: {response.status_code} {response.text}")
 
+# スケジュール設定（例: 毎日0:00に実行）
+schedule.every().day.at("20:35").do(change_icon)
+
 if __name__ == "__main__":
+    print("アイコン自動変更スケジューラ起動中")
     while True:
-        change_icon()
-        time.sleep(60)
+        schedule.run_pending()
+        time.sleep(30)  
+
