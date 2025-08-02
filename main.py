@@ -77,7 +77,7 @@ def change_icon():
         print(f"失敗: {response.status_code} {response.text}")
 
 # スケジュール設定（例: 毎日0:00に実行）
-schedule.every().day.at("20:30").do(change_icon)
+schedule.every().day.at("20:45").do(change_icon)
 
 if __name__ == "__main__":
     print("アイコン自動変更スケジューラ起動中")
