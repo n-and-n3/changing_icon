@@ -2,6 +2,8 @@ import os
 from datetime import datetime
 import httpx
 import dotenv
+import random 
+import time
 
 # .envファイルから環境変数を読み込む
 dotenv.load_dotenv()
@@ -11,10 +13,12 @@ BASE_URL = os.getenv("BASE_URL")               # 例: https://q.trap.jp/api/v3
 TRAQ_USERNAME = os.getenv("TRAQ_USERNAME")     # traQのユーザー名
 TRAQ_PASSWORD = os.getenv("TRAQ_PASSWORD")     # traQのパスワード
 
-def get_today_icon_path():
-    """今日の日付に対応するアイコン画像のパスを返す。例: assets/01.png"""
-    today = datetime.now().day
-    return f"assets/{today:02d}.png"
+def get_icon_path():
+    """アイコン画像のパスを返す。例: assets/01.png"""
+    files = os.listdir("assets")
+    md_files = [i for i in files if i.endswith('.png') == True]
+    next_icon = md_files[random.randrange(len(md_files))]
+    return f"assets/{next_icon}"
 
 def get_r_session_cookie():
     login_url = f"{BASE_URL}/login"
@@ -45,7 +49,7 @@ def get_r_session_cookie():
 
 def change_icon():
     """アイコン画像をtraQ API経由で変更する（毎回新しいr_sessionを取得）"""
-    icon_path = get_today_icon_path()
+    icon_path = get_icon_path()
     if not os.path.exists(icon_path):
         print(f"{icon_path} が見つかりません")
         return
@@ -71,4 +75,6 @@ def change_icon():
         print(f"失敗: {response.status_code} {response.text}")
 
 if __name__ == "__main__":
-    change_icon()
+    while True:
+        change_icon()
+        time.sleep(60)
